@@ -1,0 +1,36 @@
+body {
+  background-color: #F6F4F1!important;
+}
+
+#logo {
+  color: #846C63 !important;
+  text-transform: uppercase;
+  left: 50px;
+}
+
+.menu-font {
+  color: #846C63 !important;
+  text-transform: uppercase;
+}
+
+.image {
+  height: 228px !important;
+}
+
+.card {
+  width: 396px !important;
+  height: 545px !important;
+}
+
+.card-content {
+  height: 262px !important;
+}
+
+.card .card-title {
+  font-size: 19px !important;
+  font-weight: 370 !important;
+}
+
+nav {
+  background-color: white;
+}

@@ -28,16 +28,20 @@ Vue.component('article-card', {
 
 Vue.component('navbar', {
   template: `
-    <nav>
-      <div class="container">
-        <div class="nav-wrapper">
-          <a href="#!" class="brand-logo" id="logo">&nbsp;FakeNews</a>
-          <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li v-for="category in categories"><a href="" class="menu-font" v-text="category"></a></li>
+  <nav>
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="#!" class="brand-logo" id="logo">&nbsp;FakeNews</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li v-for="category in categories"><a href="" class="menu-font" v-text="category" @click.prevent="filterCategory(category)"></a></li>
+          <li><a class="dropdown-trigger menu-font" href="#!" data-target="dropdown1">Countries<i class="material-icons right">arrow_drop_down</i></a></li>
+          <ul id="dropdown1" class="dropdown-content">
+            <li v-for="country in countries"><a href="#!" v-text="country" @click.prevent="filterCountry(country)"></a></li>
           </ul>
-        </div>
+        </ul>
       </div>
-    </nav>
+    </div>
+  </nav>
   `,
   data() {
     return {
@@ -49,7 +53,71 @@ Vue.component('navbar', {
         'Entertainment',
         'General',
         'Health',
+      ],
+      countries: [
+        'ae',
+        'ar',
+        'at',
+        'au',
+        'be',
+        'bg',
+        'br',
+        'ca',
+        'ch',
+        'cn',
+        'co',
+        'cu',
+        'cz',
+        'de',
+        'eg',
+        'fr',
+        'gb',
+        'gr',
+        'hk',
+        'hu',
+        'id',
+        'ie',
+        'il',
+        'in',
+        'it',
+        'jp',
+        'kr',
+        'lt',
+        'lv',
+        'ma',
+        'mx',
+        'my',
+        'ng',
+        'nl',
+        'no',
+        'nz',
+        'ph',
+        'pl',
+        'pt',
+        'ro',
+        'rs',
+        'ru',
+        'sa',
+        'se',
+        'sg',
+        'si',
+        'sk',
+        'th',
+        'tr',
+        'tw',
+        'ua',
+        'us',
+        've',
+        'za'
       ]
+    }
+  },
+  methods: {
+    filterCategory(category) {
+      this.$emit('category-change', category);
+    },
+    filterCountry(country) {
+      this.$emit('country-change', country);
     }
   }
 });
@@ -59,21 +127,12 @@ moment.locale('pt');
 new Vue({
   el: "#app",
   data: {
-    articles: []
+    articles: [],
+    country: 'pt',
+    category: 'sports'
   },
   mounted() {
-    let url = "https://newsapi.org/v2/top-headlines";
-    let params = {
-      params: {
-        country: 'pt',
-        category: 'sports',
-        apiKey: 'f360d65f674d48fabca570d30dac2a42'
-      }
-    };
-    
-    axios
-      .get(url, params)
-      .then(response => (this.articles = response.data.articles));
+    this.loadNews();
   },
   computed: {
     recentsArticles() {
@@ -86,5 +145,33 @@ new Vue({
         !this.recentsArticles.some(recentArticle => recentArticle.url === article.url)
       )
     },
+  },
+  methods: {
+    onCategoryChange(category) {
+      this.category = category;
+      this.loadNews(category);
+    },
+    onCountryChange(country) {
+      this.country = country;
+      this.loadNews(null, country);
+    },
+    loadNews() {
+      let url = "https://newsapi.org/v2/top-headlines";
+      let params = {
+        params: {
+          country: this.country,
+          category: this.category,
+          apiKey: 'f360d65f674d48fabca570d30dac2a42'
+        }
+      };
+      
+      axios
+        .get(url, params)
+        .then(response => (this.articles = response.data.articles));
+    }
   }
+});
+
+$(function() {
+  $(".dropdown-trigger").dropdown();
 });
